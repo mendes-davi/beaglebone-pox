@@ -1,0 +1,6 @@
+- [ ] I2C_DEV_1 is hardcoded
+- [ ] Refactor references of "timer" to "MAX30100_Timer"
+- [ ] Update MAX30100_Filters for better lowpass filtering
+- [ ] Automate filter header generation using Octave/Matlab
+    - [ ] Utility for loading IIR filter parameters from files
+- [ ] Proper logging support using "rxi/log" library

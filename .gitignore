@@ -1,0 +1,10 @@
+.clangd/
+compile_commands.json
+tags
+pox
+mpox
+filtdata.txt
+rawdata.txt
+*.o
+Session.vim
+*.log
