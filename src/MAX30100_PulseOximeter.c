@@ -7,7 +7,7 @@
 #include "MAX30100_PulseOximeter.h"
 #include "MAX30100_SpO2Calculator.h"
 #include "I2C.h"
-#include "timer.h"
+#include "MAX30100_Timer.h"
 #include "MAX30100.h"
 #include "MAX30100_BeatDetector.h"
 /* #include "SSD1306_OLED.h" */

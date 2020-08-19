@@ -5,7 +5,7 @@
 #include "ringbuffer.h"
 #include "MAX30100_Registers.h"
 #include "I2C.h"
-#include "timer.h"
+#include "MAX30100_Timer.h"
 
 #define DEFAULT_MODE                MAX30100_MODE_HRONLY
 #define DEFAULT_SAMPLING_RATE       MAX30100_SAMPRATE_100HZ

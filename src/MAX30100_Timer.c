@@ -1,6 +1,6 @@
 #include <pthread.h>
 
-#include "timer.h"
+#include "MAX30100_Timer.h"
 
 static long int stepCounter = 0;
 static pthread_mutex_t timerLock = PTHREAD_MUTEX_INITIALIZER;

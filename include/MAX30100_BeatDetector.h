@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "MAX30100_Filters.h"
-#include "timer.h"
+#include "MAX30100_Timer.h"
 
 #define BEATDETECTOR_INIT_HOLDOFF                2000    // in ms, how long to wait before counting
 #define BEATDETECTOR_MASKING_HOLDOFF             60      // in ms, non-retriggerable window after beat detection

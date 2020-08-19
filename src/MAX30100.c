@@ -6,7 +6,7 @@
 
 #include "I2C.h"
 #include "MAX30100.h"
-#include "timer.h"
+#include "MAX30100_Timer.h"
 
 bool begin()
 {

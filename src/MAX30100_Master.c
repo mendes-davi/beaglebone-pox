@@ -11,7 +11,7 @@
 #include "MAX30100.h"
 #include "wiringSerial.h"
 #include "I2C.h"
-#include "timer.h"
+#include "MAX30100_Timer.h"
 #include "fdacoefs.h"
 
 int main(int argc, char *argv[]) {
