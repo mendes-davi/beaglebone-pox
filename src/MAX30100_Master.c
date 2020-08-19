@@ -16,10 +16,11 @@
 
 int main(int argc, char *argv[]) {
     pthread_t threadId[2];
+    int err;
 
     // Log
     if(max_init_log() == 0)
-        max_info("Hello World!");
+        max_info("POX Log started!");
     else {
         printf("FAILED to start log!");
         exit(1);
@@ -28,21 +29,24 @@ int main(int argc, char *argv[]) {
     // UART
     uart_fd = serialOpen(TTY, TTY_BAUDRATE);
     if (uart_fd == -2) {
-        perror("UART: Wrong baudrate!");
+        max_fatal("UART: Wrong baudrate!");
         exit(1);
     }
     if (uart_fd == -1) {
-        perror("UART: Failed to open tty!");
+        max_fatal("UART: Failed to open tty!");
         exit(1);
     }
+    max_info("TTY UART started!");
+    max_debug("Serial com in %s %d baurate", TTY, TTY_BAUDRATE);
 
 
     // Initial Start of MAX30100
     // begin() uses the DEFAULT settings defined in MAX30100.h
 	if(!begin()) {
-        printf("Failed to initialize MAX30100");
+        max_fatal("Failed to initialize MAX30100!");
         exit(1);
 	}
+
     // Initial LED Current Parameters
 	setMode(MAX30100_MODE_SPO2_HR);
     setLedsCurrent(irLedCurrent, (LEDCurrent) redLedCurrentIndex);
@@ -60,19 +64,19 @@ int main(int argc, char *argv[]) {
     butterBandpass.py = malloc(N * sizeof(float));
     memset(butterBandpass.py, 0, N * sizeof(float));
 
-    int err;
     err = pthread_create(&(threadId[0]), NULL, &fifoThread, NULL);
     if (err != 0) {
-        printf("Can't create thread :[%s]\n", strerror(err));
+        max_fatal("Can't create thread :[%s]\n", strerror(err));
         exit(1);
     }
+    max_debug("Thread started: MAX fifoThread");
     err = pthread_create(&(threadId[1]), NULL, &workerThread, NULL);
     if (err != 0) {
-        printf("Can't create thread :[%s]\n", strerror(err));
+        max_fatal("Can't create thread :[%s]\n", strerror(err));
         exit(1);
     }
+    max_debug("Thread started: MAX workerThread");
 
-    clear();
     while(millis() <= 10*1000)
     {
         /* gotoxy(0,0); */
@@ -84,6 +88,7 @@ int main(int argc, char *argv[]) {
     pthread_cancel(threadId[1]);
     Close_device(I2C_DEV_1.fd_i2c);
     serialClose(uart_fd);
+    max_info("End of execution! Exiting...");
     return 0;
 }
 
@@ -99,7 +104,7 @@ void* workerThread(void *args) {
     fraw = fopen("rawdata.txt", "w+");
     fdata = fopen("filtdata.txt", "w+");
     if (fraw == NULL || fdata == NULL) {
-        printf("Error opening file!\n");
+        max_fatal("Error opening file!\n");
         exit(1);
     }
 

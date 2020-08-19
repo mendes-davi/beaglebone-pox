@@ -7,14 +7,19 @@
 #include "I2C.h"
 #include "MAX30100.h"
 #include "MAX30100_Timer.h"
+#include "MAX30100_Log.h"
 
 bool begin()
 {
-    if (init_i2c_dev1(MAX30100_I2CADDR) == -1)
+    if (init_i2c_dev1(MAX30100_I2CADDR) == -1) {
+        max_trace("Failed to init I2C device");
         return false;
+    }
 
-    if(getPartId() != EXPECTED_PART_ID)
+    if(getPartId() != EXPECTED_PART_ID) {
+        max_trace("Unexpected PART_ID for MAX30100");
     	return false;
+    }
 
     setMode(DEFAULT_MODE);
     setLedsPulseWidth(DEFAULT_PULSE_WIDTH);
@@ -26,6 +31,7 @@ bool begin()
     int bufferSizeSamples = getRingBufferSize(DEFAULT_SAMPLING_RATE);
     bufferInit(redBuffer, bufferSizeSamples, uint16_t);
     bufferInit(irBuffer, bufferSizeSamples, uint16_t);
+    max_debug("Initialized ringbuffer with size of %d samples", bufferSizeSamples);
     redBuffer_ptr = &redBuffer;
     irBuffer_ptr = &irBuffer;
 
@@ -76,6 +82,7 @@ void setSamplingRate(SamplingRate samplingRate)
 void setLedsCurrent(LEDCurrent irLedCurrent, LEDCurrent redLedCurrent)
 {
     writeRegister(MAX30100_REG_LED_CONFIGURATION, redLedCurrent << 4 | irLedCurrent);
+    max_debug("Set LEDs Current to IR: %#x & R: %#x", irLedCurrent, redLedCurrent);
 }
 
 void setHighresModeEnabled(bool enabled)
@@ -86,6 +93,7 @@ void setHighresModeEnabled(bool enabled)
     } else {
         writeRegister(MAX30100_REG_SPO2_CONFIGURATION, previous & ~MAX30100_SPC_SPO2_HI_RES_EN);
     }
+    max_debug("High Resolution MAX30100 is set to %s", enabled ? "true" : "false");
 }
 
 void resetFifo()
@@ -93,6 +101,7 @@ void resetFifo()
     writeRegister(MAX30100_REG_FIFO_WRITE_POINTER, 0);
     writeRegister(MAX30100_REG_FIFO_READ_POINTER, 0);
     writeRegister(MAX30100_REG_FIFO_OVERFLOW_COUNTER, 0);
+    max_debug("Reset MAX30100 fifo");
 }
 
 void resume()
@@ -101,6 +110,7 @@ void resume()
     modeConfig &= ~MAX30100_MC_SHDN;
 
     writeRegister(MAX30100_REG_MODE_CONFIGURATION, modeConfig);
+    max_debug("Resumed MAX30100 Operation");
 }
 
 void shutdown()
@@ -108,6 +118,7 @@ void shutdown()
     uint8_t modeConfig = readRegister(MAX30100_REG_MODE_CONFIGURATION);
     modeConfig |= MAX30100_MC_SHDN;
     writeRegister(MAX30100_REG_MODE_CONFIGURATION, modeConfig);
+    max_debug("MAX30100 is going down for power off");
 }
 
 float retrieveTemperature()
